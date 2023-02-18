@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/A11Might/shuangpin/pkg/model"
 	"github.com/A11Might/shuangpin/pkg/shuangpin"
-	"github.com/charmbracelet/bubbles/progress"
+	"github.com/A11Might/shuangpin/pkg/util"
 	tea "github.com/charmbracelet/bubbletea"
-	"os"
-	"time"
+	"github.com/mozillazg/go-pinyin"
 )
 
 const (
@@ -49,16 +50,23 @@ func main() {
 }
 
 func initialModel(answer bool) model.Model {
-	bar := progress.NewModel(progress.WithScaledGradient(blue, purple))
-
-	chinese, display, shuangpin := shuangpin.TextWithSymbol("东东你好", 100)
-
+	chineses := util.HandlingText(shuangpin.GenerateChinese("你好", 100))
+	words := make([]*model.Word, 0, len([]rune(chineses)))
+	for _, word := range []rune(chineses) {
+		if !util.Symbol(string(word)) || string(word) == "" {
+			pinyins := pinyin.LazyConvert(string(word), nil)
+			shuangpin := shuangpin.Pinyin2NaturalCode(pinyins[0])
+			words = append(words, &model.Word{
+				Word:       string(word),
+				Pinyin:     pinyins[0],
+				Shuangpyin: shuangpin,
+			})
+		}
+	}
 	return model.Model{
-		Progress:      &bar,
-		Text:          []rune(chinese),
-		Split:         display,
-		TextShuangpin: shuangpin,
-		Answer:        answer,
-		Start:         time.Now(),
+		Word:     words,
+		Index:    0,
+		KeyBoard: model.NewKeyBoard(),
+		Typed:    "",
 	}
 }

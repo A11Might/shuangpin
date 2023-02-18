@@ -22,7 +22,7 @@ func init() {
 	json.Unmarshal([]byte(getJsonDate()), &data)
 }
 
-func generateChinese(title string, length int) string {
+func GenerateChinese(title string, length int) string {
 	body := ""
 	for len(body) < length {
 		num := rand.Intn(100)

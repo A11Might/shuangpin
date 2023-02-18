@@ -1,37 +1,7 @@
 package shuangpin
 
 var (
-	naturalCodeKeyToPinyin map[string][]string
-	naturalCodePinyinToKey map[string]string
-	initials               []string
-	jsonData               string
-)
-
-// GetShuangpin 映射按键与声母或韵母
-func GetShuangpin(char string) []string {
-	if _, ok := naturalCodeKeyToPinyin[char]; !ok {
-		return []string{char}
-	}
-	return naturalCodeKeyToPinyin[char]
-}
-
-func getNaturalCodeKeyToPinyin() map[string][]string {
-	return naturalCodeKeyToPinyin
-}
-
-func getNaturalCodePinyinToKey() map[string]string {
-	return naturalCodePinyinToKey
-}
-
-func getInitials() []string {
-	return initials
-}
-
-func getJsonDate() string {
-	return jsonData
-}
-
-func init() {
+	// 自然码键位映射
 	naturalCodeKeyToPinyin = map[string][]string{
 		"q": {"q", "iu"},
 		"w": {"w", "ia", "ua"},
@@ -62,7 +32,6 @@ func init() {
 		"n": {"n", "in"},
 		"m": {"m", "ian"},
 	}
-
 	naturalCodePinyinToKey = map[string]string{
 		"q":   "q",
 		"iu":  "q",
@@ -124,7 +93,63 @@ func init() {
 		"ian": "m",
 	}
 
+	// 声母，按顺序匹配（先 sh 再 s）
 	initials = []string{"b", "p", "m", "f", "d", "t", "n", "l", "g", "k", "h", "j", "q", "x", "zh", "ch", "sh", "r", "z", "c", "s", "y", "w"}
+
+	initialMap = map[string]struct{}{
+		"b":  struct{}{},
+		"p":  struct{}{},
+		"m":  struct{}{},
+		"f":  struct{}{},
+		"d":  struct{}{},
+		"t":  struct{}{},
+		"n":  struct{}{},
+		"l":  struct{}{},
+		"g":  struct{}{},
+		"k":  struct{}{},
+		"h":  struct{}{},
+		"j":  struct{}{},
+		"q":  struct{}{},
+		"x":  struct{}{},
+		"zh": struct{}{},
+		"ch": struct{}{},
+		"sh": struct{}{},
+		"r":  struct{}{},
+		"z":  struct{}{},
+		"c":  struct{}{},
+		"s":  struct{}{},
+		"y":  struct{}{},
+		"w":  struct{}{},
+	}
+
+	jsonData string
+)
+
+// GetShuangpin 映射按键与声母或韵母
+func GetShuangpin(char string) []string {
+	if _, ok := naturalCodeKeyToPinyin[char]; !ok {
+		return []string{char}
+	}
+	return naturalCodeKeyToPinyin[char]
+}
+
+func getNaturalCodeKeyToPinyin() map[string][]string {
+	return naturalCodeKeyToPinyin
+}
+
+func getNaturalCodePinyinToKey() map[string]string {
+	return naturalCodePinyinToKey
+}
+
+func getInitials() []string {
+	return nil
+}
+
+func getJsonDate() string {
+	return jsonData
+}
+
+func init() {
 
 	jsonData = `{
   "title":"学生会退会",

@@ -33,8 +33,12 @@ func ListToString(list []string) string {
 func HandlingText(text string) string {
 	text = strings.Replace(text, " ", "", -1)
 	text = strings.Replace(text, "\n", "", -1)
-	text = strings.Replace(text, "，", ",", -1)
-	text = strings.Replace(text, "。", ".", -1)
+	text = strings.Replace(text, "，", "", -1)
+	text = strings.Replace(text, "。", "", -1)
+	text = strings.Replace(text, ",", "", -1)
+	text = strings.Replace(text, ".", "", -1)
+	text = strings.Replace(text, ":", "", -1)
+	text = strings.Replace(text, "?", "", -1)
 	text = strings.Replace(text, "·", "", -1)
 	text = strings.Replace(text, "x", "", -1)
 	return text

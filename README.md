@@ -31,8 +31,13 @@ Examples:
 
 ![typer](assets/shuangpin@0.0.4.gif?raw=true)
 
+- 0.05
+![typer](assets/shuangpin@0.05.gif?raw=true)
+
 ### 碎碎念
 
-参考项目 [typer](https://github.com/maaslalani/typer) ，像素级参考，逃 :(
+~~参考项目 [typer](https://github.com/maaslalani/typer) ，像素级参考，逃 :(~~
+
+参考项目 [Shuang](https://github.com/BlueSky-07/Shuang) 重新写了一个有界面的，还没抄全 :(
 
 用过的话可以给点意见，虽然我不会听，:)
