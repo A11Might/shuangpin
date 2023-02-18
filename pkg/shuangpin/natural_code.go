@@ -1,62 +1,113 @@
 package shuangpin
 
-import (
-	"strings"
+var (
+	// 自然码键位映射
+	naturalCodePinyinToKey = map[string]string{
+		"q":   "q",
+		"iu":  "q",
+		"w":   "w",
+		"ia":  "w",
+		"ua":  "w",
+		"e":   "e",
+		"r":   "r",
+		"uan": "r",
+		"t":   "t",
+		"ue":  "t",
+		"ve":  "t",
+		"y":   "y",
+		"ing": "y",
+		"uai": "y",
+		"sh":  "u",
+		"u":   "u",
+		"ch":  "i",
+		"i":   "i",
+		"o":   "o",
+		"uo":  "o",
+		"p":   "p",
+		"un":  "p",
+
+		"a":    "a",
+		"s":    "s",
+		"iong": "s",
+		"ong":  "s",
+		"d":    "d",
+		"iang": "d",
+		"uang": "d",
+		"f":    "f",
+		"en":   "f",
+		"eng":  "g",
+		"g":    "g",
+		"h":    "h",
+		"ang":  "h",
+		"j":    "j",
+		"an":   "j",
+		"k":    "k",
+		"ao":   "k",
+		"l":    "l",
+		"ai":   "l",
+
+		"z":   "z",
+		"ei":  "z",
+		"x":   "x",
+		"ie":  "x",
+		"c":   "c",
+		"iao": "c",
+		"zh":  "v",
+		"ui":  "v",
+		"v":   "v",
+		"b":   "b",
+		"ou":  "b",
+		"n":   "n",
+		"in":  "n",
+		"m":   "m",
+		"ian": "m",
+	}
+
+	// 零声母自然码键位映射
+	naturalCodeSpecialPinyinToKey = map[string]string{
+		"a":   "aa",
+		"e":   "ee",
+		"o":   "oo",
+		"ai":  "ai",
+		"ei":  "ei",
+		"ou":  "ou",
+		"an":  "an",
+		"en":  "en",
+		"ao":  "ao",
+		"er":  "er",
+		"ang": "ah",
+		"eng": "eg",
+	}
+
+	// 自然码键位映射
+	naturalCodeKeyToPinyin = map[string][]string{
+		"q": {"q", "iu"},
+		"w": {"w", "ia", "ua"},
+		"e": {"e"},
+		"r": {"r", "uan"},
+		"t": {"t", "ue", "ve"},
+		"y": {"y", "ing", "uai"},
+		"u": {"u", "sh"},
+		"i": {"i", "ch"},
+		"o": {"o", "uo"},
+		"p": {"p", "un"},
+
+		"a": {"a"},
+		"s": {"s", "iong", "ong"},
+		"d": {"d", "iang", "uang"},
+		"f": {"f", "en"},
+		"g": {"g", "eng"},
+		"h": {"h", "ang"},
+		"j": {"j", "an"},
+		"k": {"k", "ao"},
+		"l": {"l", "ai"},
+
+		"z": {"z", "ei"},
+		"x": {"x", "ie"},
+		"c": {"c", "iao"},
+		"v": {"v", "zh", "ui"},
+		"b": {"b", "ou"},
+		"n": {"n", "in"},
+		"m": {"m", "ian"},
+	}
 )
-
-type NaturalCode struct {
-}
-
-// PinyinToShuangpin
-// "zhong"(中) to "vs"
-// "guo"(国) to "go"
-// "ren"(人) to "rf"
-// "o"(哦) to "oo"
-func (n *NaturalCode) PinyinToShuangpin(pinyin string) string {
-	var builder strings.Builder
-	switch pinyin {
-	// 零声母
-	case "a", "e", "o":
-		builder.WriteString(pinyin + pinyin)
-
-	case "ai", "ei", "ou", "an", "en", "ao", "er":
-		builder.WriteString(pinyin)
-
-	case "ang":
-		builder.WriteString("ah")
-
-	case "eng":
-		builder.WriteString("eg")
-
-	default:
-		// 声母+韵母
-		for _, initial := range initials {
-			if strings.HasPrefix(pinyin, initial) {
-				pre := naturalCodePinyinToKey[initial]                // 声母
-				succ := naturalCodePinyinToKey[pinyin[len(initial):]] // 韵母
-				builder.WriteString(pre + succ)
-				break
-			}
-		}
-	}
-
-	return builder.String()
-}
-
-func (n *NaturalCode) PinyinsToShuangpins(pinyins []string) []string {
-	shuangpins := make([]string, 0, len(pinyins))
-	for i := range pinyins {
-		shuangpins = append(shuangpins, n.PinyinToShuangpin(pinyins[i]))
-	}
-	return shuangpins
-}
-
-var defaultNaturalCode = &NaturalCode{}
-
-func Pinyin2NaturalCode(pinyin string) string {
-	return defaultNaturalCode.PinyinToShuangpin(pinyin)
-}
-
-func Pinyins2NaturalCodes(pinyin []string) []string {
-	return defaultNaturalCode.PinyinsToShuangpins(pinyin)
-}

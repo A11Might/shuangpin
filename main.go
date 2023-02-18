@@ -6,23 +6,24 @@ import (
 
 	"github.com/A11Might/shuangpin/pkg/model"
 	"github.com/A11Might/shuangpin/pkg/shuangpin"
-	"github.com/A11Might/shuangpin/pkg/util"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/mozillazg/go-pinyin"
 )
 
 const (
 	blue   = "#4776E6"
 	purple = "#8E54E9"
-	usage  = `shuangpin [daan]
-daan: 显示双拼的答案
-Examples:
- - shuangpin
- - shuangpin daan`
+	usage  = `在你的命令行中练习双拼 :P
+
+Usage: 
+	shuangpin <command> [arguments]
+Command:
+	-t, --type: zrm, flypy
+	           支持自然码、小鹤双拼
+`
 )
 
 func main() {
-	if len(os.Args) > 2 {
+	if len(os.Args) > 3 {
 		fmt.Println(usage)
 		os.Exit(1)
 	}
@@ -32,40 +33,26 @@ func main() {
 		os.Exit(0)
 	}
 
-	if len(os.Args) == 2 && os.Args[1] != "daan" {
+	if len(os.Args) == 3 && os.Args[1] != "-t" && os.Args[1] != "--type" {
 		fmt.Println(usage)
 		os.Exit(1)
 	}
 
-	var answer bool
-	if len(os.Args) == 2 && os.Args[1] == "daan" {
-		answer = true
+	var spType shuangpin.ShuangpinType
+	if len(os.Args) == 3 && (os.Args[1] == "-t" || os.Args[1] == "--type") {
+		spType = shuangpin.ShuangpinType(os.Args[2])
 	}
 
-	p := tea.NewProgram(initialModel(answer))
+	p := tea.NewProgram(initialModel(spType))
 	if err := p.Start(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}
 }
 
-func initialModel(answer bool) model.Model {
-	chineses := util.HandlingText(shuangpin.GenerateChinese("你好", 100))
-	words := make([]*model.Word, 0, len([]rune(chineses)))
-	for _, word := range []rune(chineses) {
-		if !util.Symbol(string(word)) || string(word) == "" {
-			pinyins := pinyin.LazyConvert(string(word), nil)
-			shuangpin := shuangpin.Pinyin2NaturalCode(pinyins[0])
-			words = append(words, &model.Word{
-				Word:       string(word),
-				Pinyin:     pinyins[0],
-				Shuangpyin: shuangpin,
-			})
-		}
-	}
+func initialModel(spType shuangpin.ShuangpinType) model.Model {
 	return model.Model{
-		Word:     words,
-		Index:    0,
+		Word:     model.NewRandomWord(spType),
 		KeyBoard: model.NewKeyBoard(),
 		Typed:    "",
 	}

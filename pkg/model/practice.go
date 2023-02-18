@@ -9,10 +9,7 @@ import (
 )
 
 const (
-	width = 66.
-
-	// charsPerWord 2 个字母等于一个汉字
-	charsPerWord = 2.
+	width = 74.
 )
 
 var (
@@ -45,16 +42,15 @@ var (
 )
 
 type Model struct {
-	Word     []*Word
-	Index    int // 当前使用 Word 下标
+	Word     *Word
 	KeyBoard *KeyBoard
 	Typed    string // 用户输入内容
 }
 
 type TickMsg time.Time
 
-// 消除按键回显效果
-func clearKeyPress() tea.Cmd {
+// 100 毫秒后发送 TickMsg 命令，用于消除按键回显效果
+func doTick() tea.Cmd {
 	return tea.Tick(100*time.Millisecond, func(t time.Time) tea.Msg {
 		return TickMsg(t)
 	})
@@ -73,6 +69,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		m.KeyBoard.Hit(msg.String())
 
+		// 判断用户输入是否正确：错误时清空；正确自动切换汉字
+		check := func() bool {
+			if len(m.Typed) == 2 {
+				if strings.ToLower(m.Typed) == m.Word.Shuangpyin {
+					m.Word.Next()
+				}
+				m.Typed = ""
+				return true
+			}
+			return false
+		}
+
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			// 使用 Ctrl + c 退出程序
@@ -85,28 +93,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 
-		case tea.KeyTab, tea.KeyEnter:
-			// 不输入 Tab, Enter 按键名
-			return m, nil
+		case tea.KeyTab:
+			// Tab 显示答案
+			m.Typed = m.Word.Shuangpyin
+			return m, doTick()
 
 		default:
-			curWord := m.Word[m.Index]
-			m.Typed += msg.String()
-			// 判断用户输入是否正确：错误时清空；正确自动切换汉字
-			if len(m.Typed) == 2 {
-				if m.Typed == curWord.Shuangpyin {
-					m.Index++
-					if m.Index == len(m.Word) {
-						m.Index--
-						return m, tea.Quit
-					}
+			// 当使用 Tab 显示答案后，再按键会超过 2 个字符，需要先 check 校验
+			if !check() {
+				// check 不通过，可能是不到两个字符，加上新键入的字符再次 check 校验
+				if msg.String() != " " &&
+					len(msg.String()) == 1 {
+					// 空格及其他按键
+					m.Typed += msg.String()
 				}
-				m.Typed = ""
+				check()
 			}
-			return m, clearKeyPress()
+			return m, doTick()
 		}
 
 	case TickMsg:
+		// 消除按键回显效果
 		m.KeyBoard.hit = defaultPosition
 		return m, nil
 
@@ -118,28 +125,28 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	doc := strings.Builder{}
 
-	curWord := m.Word[m.Index]
-	okButton := activeButtonStyle.Render(curWord.Word)
+	okButton := activeButtonStyle.Render(m.Word.Word)
 	cancelButton := buttonStyle.Render(m.Typed)
-	question := lipgloss.NewStyle().Width(50).Align(lipgloss.Center).Render(curWord.Pinyin)
+	question := lipgloss.NewStyle().Width(50).Align(lipgloss.Center).Render(m.Word.Pinyin)
 	buttons := lipgloss.JoinHorizontal(lipgloss.Top, okButton, cancelButton)
 	ui := lipgloss.JoinVertical(lipgloss.Center, question, buttons)
 	dialog := lipgloss.Place(width, 9,
 		lipgloss.Center, lipgloss.Center,
 		dialogBoxStyle.Render(ui),
-		lipgloss.WithWhitespaceChars("双拼"),
+		lipgloss.WithWhitespaceChars(m.Word.Transform.Type()),
 		lipgloss.WithWhitespaceForeground(subtle),
 	)
 	doc.WriteString(dialog + "\n\n")
 
+	// TODO 优化代码
 	k := m.KeyBoard
 	lines := make([]string, 0, len(k.keyboard))
 	for i, rows := range k.keyboard {
 		line := make([]string, 0, len(rows))
 		for j, col := range rows {
 			// 展示汉字双拼提示
-			if strings.Contains(col, strings.ToUpper(string(curWord.Shuangpyin[0]))) ||
-				strings.Contains(col, strings.ToUpper(string(curWord.Shuangpyin[1]))) {
+			if strings.Contains(col, strings.ToUpper(string(m.Word.Shuangpyin[0]))) ||
+				strings.Contains(col, strings.ToUpper(string(m.Word.Shuangpyin[1]))) {
 				if i == k.hit.X && j == k.hit.Y {
 					line = append(line, keyStyle.Copy().Background(lipgloss.Color("64")).Render(col))
 				} else {

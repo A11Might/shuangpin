@@ -1,43 +1,54 @@
-# Shuangpin
+<h1 align="center">Welcome to shuangpin 👋</h1>
+<p>
+  <a href="https://github.com/A11Might/shuangpin" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/A11Might/shuangpin/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+  <a href="https://twitter.com/huqihh" target="_blank">
+    <img alt="Twitter: huqihh" src="https://img.shields.io/twitter/follow/huqihh.svg?style=social" />
+  </a>
+</p>
 
-在你的命令行中练习自然码双拼
+> 在你的命令行中练习双拼
 
-![自然码双拼](assets/Natural_Code_Double_Pinyin_Scheme.png)
+### ✨ Demo
 
-### 安装
-```
+![typer](assets/shuangpin@0.05.gif?raw=true)
+
+## Install
+
+```sh
 go get github.com/A11Might/shuangpin
 ```
 
-### 使用
+## Usage
 
-键入 `shuangpin` 来开始练习自然码双拼，它会生成随机中文供你练习并显示你的 WPM 数据。
-```
-shuangpin [daan]
-
-daan: 显示双拼的答案
-
-Examples:
- - shuangpin
- - shuangpin daan
+```sh
+shuangpin -t zrm
 ```
 
-### 演示
+## Author
 
-- 0.0.3
+👤 **Kohath Hu**
 
-![typer](assets/shuangpin@0.0.3.gif?raw=true)
-- 0.0.4
+* Website: https://a11might.github.io/
+* Twitter: [@huqihh](https://twitter.com/huqihh)
+* Github: [@A11Might](https://github.com/A11Might)
 
-![typer](assets/shuangpin@0.0.4.gif?raw=true)
+## 🤝 Contributing
 
-- 0.05
-![typer](assets/shuangpin@0.05.gif?raw=true)
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/A11Might/shuangpin/issues). 
 
-### 碎碎念
+## Show your support
 
-~~参考项目 [typer](https://github.com/maaslalani/typer) ，像素级参考，逃 :(~~
+Give a ⭐️ if this project helped you!
 
-参考项目 [Shuang](https://github.com/BlueSky-07/Shuang) 重新写了一个有界面的，还没抄全 :(
+## 📝 License
 
-用过的话可以给点意见，虽然我不会听，:)
+Copyright © 2023 [kohath hu](https://github.com/A11Might).<br />
+This project is [MIT](https://github.com/A11Might/shuangpin/blob/master/LICENSE) licensed.
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
