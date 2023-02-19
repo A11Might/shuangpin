@@ -21,7 +21,7 @@ func TestNaturalCode(t *testing.T) {
 		"rf",
 		"oo",
 	}
-	n := NewTransform(NaturalCodeT)
+	n := NewTransform(NaturalCode)
 	for i, pinyin := range pinyins {
 		shuangpin := n.Pinyin2Shuangpin(pinyin)
 		assert.Equal(t, want[i], shuangpin)
@@ -37,7 +37,7 @@ func TestFlyPy(t *testing.T) {
 		"sc",
 		"mp",
 	}
-	n := NewTransform(FlyPYT)
+	n := NewTransform(FlyPY)
 	for i, pinyin := range pinyins {
 		shuangpin := n.Pinyin2Shuangpin(pinyin)
 		assert.Equal(t, want[i], shuangpin)

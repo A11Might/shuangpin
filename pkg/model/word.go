@@ -13,13 +13,13 @@ type Word struct {
 	Shuangpyin string // "vs"
 
 	rand      *rand.Rand
-	Transform shuangpin.ITransform
+	Transform *shuangpin.Transform
 }
 
-func NewRandomWord(spType ...shuangpin.ShuangpinType) *Word {
+func NewRandomWord(scheme shuangpin.ShuangpinScheme) *Word {
 	w := Word{
 		rand:      rand.New(rand.NewSource(time.Now().UnixNano())),
-		Transform: shuangpin.NewTransform(spType...),
+		Transform: shuangpin.NewTransform(scheme),
 	}
 	w.getRandomWord()
 	return &w
@@ -30,15 +30,11 @@ func (w *Word) Next() {
 }
 
 func (w *Word) getRandomWord() {
+	// 随机取汉字
 	sheng := shuangpin.Dict[w.rand.Intn(len(shuangpin.Dict))]
 	yun := sheng.Yuns[w.rand.Intn(len(sheng.Yuns))]
-	pinyin := sheng.Sheng + yun.Yun
-	// 万恶的指针
-	*w = Word{
-		Word:       yun.Word,
-		Pinyin:     pinyin,
-		Shuangpyin: w.Transform.Pinyin2Shuangpin(pinyin),
-		rand:       w.rand,
-		Transform:  w.Transform,
-	}
+	// 重新生成汉字双拼
+	w.Word = yun.Word
+	w.Pinyin = sheng.Sheng + yun.Yun
+	w.Shuangpyin = w.Transform.Pinyin2Shuangpin(w.Pinyin)
 }
