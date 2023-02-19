@@ -16,10 +16,16 @@ func main() {
 		Usage: "Practice shuangpin in your terminal",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:    "type",
-				Aliases: []string{"t"},
+				Name:    "scheme",
+				Aliases: []string{"s"},
 				Value:   "zrm",
 				Usage:   "choose shuangpin scheme",
+			},
+			&cli.StringFlag{
+				Name:    "mode",
+				Aliases: []string{"m"},
+				Value:   "random",
+				Usage:   "choose practice mode",
 			},
 			&cli.BoolFlag{
 				Name:    "pinyin",
@@ -35,7 +41,7 @@ func main() {
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			p := tea.NewProgram(model.NewModel(cCtx.String("type"), cCtx.Bool("pinyin"), cCtx.Bool("keyboard")))
+			p := tea.NewProgram(model.NewModel(cCtx.String("scheme"), cCtx.String("mode"), cCtx.Bool("pinyin"), cCtx.Bool("keyboard")))
 			if _, err := p.Run(); err != nil {
 				fmt.Printf("Alas, there's been an error: %v", err)
 				os.Exit(1)
@@ -46,9 +52,12 @@ func main() {
 			{
 				Name:    "support",
 				Aliases: []string{"s"},
-				Usage:   "View the supported shuangpin schemes",
+				Usage:   "View the supported shuangpin schemes and practice mode",
 				Action: func(cCtx *cli.Context) error {
-					fmt.Println("支持自然码（zrm）、小鹤双拼（flypy）、搜狗双拼（sougou）、微软双拼（ms)")
+					fmt.Println(
+						"支持的双拼方案：自然码（zrm）、小鹤双拼（flypy）、搜狗双拼（sougou）、微软双拼（ms)\n" +
+							"支持的练习模式：全部顺序（sequence）、全部随机（random）",
+					)
 					return nil
 				},
 			},

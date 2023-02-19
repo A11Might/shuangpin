@@ -19,6 +19,7 @@ var (
 	}
 
 	defaultPosition = &position{X: -1, Y: -1}
+	firstPosition   = &position{X: 0, Y: 0}
 )
 
 type layout string

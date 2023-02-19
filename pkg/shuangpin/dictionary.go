@@ -13,6 +13,7 @@ type Yun struct {
 }
 
 // https://github.com/BlueSky-07/Shuang/blob/master/src/dict.js
+// 二维数组：第一维声母，第二维韵母
 var Dict = dictionary{
 	{
 		"",

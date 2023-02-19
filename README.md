@@ -25,7 +25,7 @@ go install github.com/A11Might/shuangpin
 
 ## Usage
 
-默认使用自然码方案，并显示拼音及按键提示进行练习。
+默认使用自然码方案，并显示拼音及按键提示进行随机汉字练习。
 
 ```sh
 shuangpin
@@ -41,14 +41,21 @@ USAGE:
    shuangpin [global options] command [command options] [arguments...]
 
 COMMANDS:
-   support, s  View the supported shuangpin schemes
+   support, s  View the supported shuangpin schemes and practice mode
    help, h     Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --type value, -t value  choose shuangpin scheme (default: "zrm")
-   --pinyin, -p            disable pinyin prompt (default: false)
-   --keyboard, -k          disable key prompt (default: false)
-   --help, -h              show help
+   --scheme value, -s value  choose shuangpin scheme (default: "zrm")
+   --mode value, -m value    choose practice mode (default: "random")
+   --pinyin, -p              disable pinyin prompt (default: false)
+   --keyboard, -k            disable key prompt (default: false)
+   --help, -h                show help
+```
+
+初学者推荐先选择想学习的双拼方案，然后使用 *全部顺序* 模式进行练习：
+
+```
+shuangpin -s zrm -m sequence
 ```
 
 ## Author

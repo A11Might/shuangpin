@@ -84,9 +84,9 @@ type Model struct {
 	disableKbPrompt bool // 禁用按键提示
 }
 
-func NewModel(scheme string, disablePyPrompt, disableKbPrompt bool) Model {
+func NewModel(scheme, mode string, disablePyPrompt, disableKbPrompt bool) Model {
 	return Model{
-		word:            NewRandomWord(shuangpin.ShuangpinScheme(scheme)),
+		word:            NewRandomWord(shuangpin.ShuangpinScheme(scheme), practiceMode(mode)),
 		keyBoard:        NewKeyBoard(),
 		disablePyPrompt: disablePyPrompt,
 		disableKbPrompt: disableKbPrompt,
