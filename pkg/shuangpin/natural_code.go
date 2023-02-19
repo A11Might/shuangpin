@@ -64,50 +64,18 @@ var (
 	}
 
 	// 零声母自然码键位映射
-	naturalCodeSpecialPinyinToKey = map[string]string{
-		"a":   "aa",
-		"e":   "ee",
-		"o":   "oo",
-		"ai":  "ai",
-		"ei":  "ei",
-		"ou":  "ou",
-		"an":  "an",
-		"en":  "en",
-		"ao":  "ao",
-		"er":  "er",
-		"ang": "ah",
-		"eng": "eg",
-	}
-
-	// 自然码键位映射
-	naturalCodeKeyToPinyin = map[string][]string{
-		"q": {"q", "iu"},
-		"w": {"w", "ia", "ua"},
-		"e": {"e"},
-		"r": {"r", "uan"},
-		"t": {"t", "ue", "ve"},
-		"y": {"y", "ing", "uai"},
-		"u": {"u", "sh"},
-		"i": {"i", "ch"},
-		"o": {"o", "uo"},
-		"p": {"p", "un"},
-
-		"a": {"a"},
-		"s": {"s", "iong", "ong"},
-		"d": {"d", "iang", "uang"},
-		"f": {"f", "en"},
-		"g": {"g", "eng"},
-		"h": {"h", "ang"},
-		"j": {"j", "an"},
-		"k": {"k", "ao"},
-		"l": {"l", "ai"},
-
-		"z": {"z", "ei"},
-		"x": {"x", "ie"},
-		"c": {"c", "iao"},
-		"v": {"v", "zh", "ui"},
-		"b": {"b", "ou"},
-		"n": {"n", "in"},
-		"m": {"m", "ian"},
+	naturalCodeSpecialPinyinToKey = map[string][]string{
+		"a":   {"a", "a"},
+		"e":   {"e", "e"},
+		"o":   {"o", "o"},
+		"ai":  {"a", "i"},
+		"ei":  {"e", "i"},
+		"ou":  {"o", "u"},
+		"an":  {"a", "n"},
+		"en":  {"e", "n"},
+		"ao":  {"a", "o"},
+		"er":  {"e", "r"},
+		"ang": {"a", "h"},
+		"eng": {"e", "g"},
 	}
 )

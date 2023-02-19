@@ -2,11 +2,17 @@ package model
 
 var (
 	// QWERTY 键盘布局
-	QWERTYKeyBoard = [][]string{
-		{" Tab ", " Q ", " W ", " E ", " R ", " T ", " Y ", " U ", " I ", " O ", " P ", " [{ ", " ]} ", " |\\ "},
-		{" A ", " S ", " D ", " F ", " G ", " H ", " J ", " K ", " L ", " ;: ", " '\" ", " Enter "},
-		{" Z ", " X ", " C ", " V ", " B ", " N ", " M ", " ,< ", " .> ", " /? "},
+	QWERTYKeyBoardDisplay = [][]string{
+		{" Tab ", "Q     ", "W     ", "E     ", "R     ", "T     ", "Y     ", "U     ", "I     ", "O     ", "P     ", " [{ ", " ]} ", " |\\ "},
+		{"A     ", "S     ", "D     ", "F     ", "G     ", "H     ", "J     ", "K     ", "L     ", " ;: ", " '\" ", " Enter "},
+		{"Z     ", "X     ", "C     ", "V     ", "B     ", "N     ", "M     ", " ,< ", " .> ", " /? "},
 		{"                    "},
+	}
+	QWERTYKeyBoardChar = [][]string{
+		{"", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "", "", ""},
+		{"a", "s", "d", "f", "g", "h", "j", "k", "l", "", "", ""},
+		{"z", "x", "c", "v", "b", "n", "m", "", "", ""},
+		{""},
 	}
 	QWERTYKeyIndex = map[string]*position{
 		"tab": {0, 0}, "q": {0, 1}, "w": {0, 2}, "e": {0, 3}, "r": {0, 4}, "t": {0, 5}, "y": {0, 6}, "u": {0, 7}, "i": {0, 8}, "o": {0, 9}, "p": {0, 10}, "[": {0, 11}, "]": {0, 12}, "\\": {0, 13},
@@ -31,8 +37,9 @@ const (
 )
 
 type KeyBoard struct {
-	keyboard [][]string
-	hit      *position
+	keyDisplay [][]string // 键位对应展示
+	keyChar    [][]string // 键位对应字符
+	hit        *position
 }
 
 type position struct {
@@ -49,7 +56,8 @@ func NewKeyBoard(keyBoardLayout ...layout) (keyboard *KeyBoard) {
 	keyboard = &KeyBoard{hit: defaultPosition}
 	switch keyBoardLayout[0] {
 	case QWERTY:
-		keyboard.keyboard = QWERTYKeyBoard
+		keyboard.keyDisplay = QWERTYKeyBoardDisplay
+		keyboard.keyChar = QWERTYKeyBoardChar
 	default:
 		panic("unsupported keyboard layout")
 	}

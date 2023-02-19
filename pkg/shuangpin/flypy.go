@@ -62,18 +62,18 @@ var (
 	}
 
 	// 零声母小鹤双拼键位映射
-	flypySpecialPinyinToKey = map[string]string{
-		"a":   "aa",
-		"ai":  "ai",
-		"an":  "an",
-		"ang": "ah",
-		"ao":  "ao",
-		"e":   "ee",
-		"ei":  "ei",
-		"en":  "en",
-		"eng": "eg",
-		"er":  "er",
-		"o":   "oo",
-		"ou":  "ou",
+	flypySpecialPinyinToKey = map[string][]string{
+		"a":   {"a", "a"},
+		"ai":  {"a", "i"},
+		"an":  {"a", "n"},
+		"ang": {"a", "h"},
+		"ao":  {"a", "o"},
+		"e":   {"e", "e"},
+		"ei":  {"e", "i"},
+		"en":  {"e", "n"},
+		"eng": {"e", "g"},
+		"er":  {"e", "r"},
+		"o":   {"o", "o"},
+		"ou":  {"o", "u"},
 	}
 )

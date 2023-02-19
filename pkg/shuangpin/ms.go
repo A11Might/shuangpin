@@ -64,18 +64,18 @@ var (
 	}
 
 	// 零声母微软双拼键位映射
-	msSpecialPinyinToKey = map[string]string{
-		"a":   "oa",
-		"ai":  "ol",
-		"an":  "oj",
-		"ang": "oh",
-		"ao":  "ok",
-		"e":   "oe",
-		"ei":  "oz",
-		"en":  "of",
-		"eng": "og",
-		"er":  "or",
-		"o":   "oo",
-		"ou":  "ob",
+	msSpecialPinyinToKey = map[string][]string{
+		"a":   {"o", "a"},
+		"ai":  {"o", "l"},
+		"an":  {"o", "j"},
+		"ang": {"o", "h"},
+		"ao":  {"o", "k"},
+		"e":   {"o", "e"},
+		"ei":  {"o", "z"},
+		"en":  {"o", "f"},
+		"eng": {"o", "g"},
+		"er":  {"o", "r"},
+		"o":   {"o", "o"},
+		"ou":  {"o", "b"},
 	}
 )

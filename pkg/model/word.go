@@ -2,6 +2,7 @@ package model
 
 import (
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/A11Might/shuangpin/pkg/shuangpin"
@@ -15,19 +16,21 @@ const (
 )
 
 type Word struct {
-	Word       string // "中"
-	Pinyin     string // "zhong"
-	Shuangpyin string // "vs"
+	Word       string   // "中"
+	Shengyun   []string // ["zh", "ong"]
+	Pinyin     string   // "zhong"
+	Shuangpyin []string // ["v", "s"]
+	Answer     string   // "vs"
 
 	// mode
 	mode     practiceMode // 练习模式
-	position *position    // 当前单词位置
+	position *position    // 当前单词位置（全部顺序模式使用）
 
 	rand      *rand.Rand
 	Transform *shuangpin.Transform
 }
 
-func NewRandomWord(scheme shuangpin.ShuangpinScheme, mode practiceMode) *Word {
+func NewWord(scheme shuangpin.ShuangpinScheme, mode practiceMode) *Word {
 	w := Word{
 		mode:      mode,
 		rand:      rand.New(rand.NewSource(time.Now().UnixNano())),
@@ -43,6 +46,7 @@ func NewRandomWord(scheme shuangpin.ShuangpinScheme, mode practiceMode) *Word {
 	return &w
 }
 
+// Next 根据练习模式获取下一个汉字
 func (w *Word) Next() {
 	switch w.mode {
 	case Sequence:
@@ -54,26 +58,16 @@ func (w *Word) Next() {
 
 // 随机取汉字
 func (w *Word) getRandomWord() {
-	sheng := shuangpin.Dict[w.rand.Intn(len(shuangpin.Dict))]
-	yun := sheng.Yuns[w.rand.Intn(len(sheng.Yuns))]
-
-	// 重新生成汉字双拼
-	w.Word = yun.Word
-	w.Pinyin = sheng.Sheng + yun.Yun
-	w.Shuangpyin = w.Transform.Pinyin2Shuangpin(w.Pinyin)
+	x := w.rand.Intn(len(shuangpin.Dict))
+	y := w.rand.Intn(len(shuangpin.Dict[x].Yuns))
+	w.genWord(x, y)
 }
 
 // 顺序取汉字
 func (w *Word) getNextWord() {
-	sheng := shuangpin.Dict[w.position.X]
-	yun := sheng.Yuns[w.position.Y]
+	w.genWord(w.position.X, w.position.Y)
 
-	// 重新生成汉字双拼
-	w.Word = yun.Word
-	w.Pinyin = sheng.Sheng + yun.Yun
-	w.Shuangpyin = w.Transform.Pinyin2Shuangpin(w.Pinyin)
-
-	// 获取下一个汉字位置
+	// 计算下一个汉字位置
 	w.position.Y++
 	c := len(shuangpin.Dict[w.position.X].Yuns)
 	if w.position.Y == c {
@@ -86,4 +80,16 @@ func (w *Word) getNextWord() {
 		// 到达最后一行，从第一行开始
 		w.position.X = 0
 	}
+}
+
+// 根据 Dict 坐标更新 Word 中的汉字
+func (w *Word) genWord(x, y int) {
+	sheng := shuangpin.Dict[x]
+	yun := sheng.Yuns[y]
+
+	w.Word = yun.Word
+	w.Shengyun = []string{sheng.Sheng, yun.Yun}
+	w.Pinyin = strings.Join(w.Shengyun, "")
+	w.Shuangpyin = w.Transform.Shengyun2Shuangpin(w.Shengyun)
+	w.Answer = strings.Join(w.Shuangpyin, "")
 }

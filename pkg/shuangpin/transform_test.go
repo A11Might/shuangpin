@@ -7,39 +7,39 @@ import (
 )
 
 func TestNaturalCode(t *testing.T) {
-	pinyins := []string{
-		"shi",
-		"zhong",
-		"guo",
-		"ren",
-		"o",
+	pinyins := [][]string{
+		{"sh", "i"},
+		{"zh", "ong"},
+		{"g", "uo"},
+		{"r", "en"},
+		{"", "o"},
 	}
-	want := []string{
-		"ui",
-		"vs",
-		"go",
-		"rf",
-		"oo",
+	want := [][]string{
+		{"u", "i"},
+		{"v", "s"},
+		{"g", "o"},
+		{"r", "f"},
+		{"o", "o"},
 	}
 	n := NewTransform(NaturalCode)
 	for i, pinyin := range pinyins {
-		shuangpin := n.Pinyin2Shuangpin(pinyin)
+		shuangpin := n.Shengyun2Shuangpin(pinyin)
 		assert.Equal(t, want[i], shuangpin)
 	}
 }
 
 func TestFlyPy(t *testing.T) {
-	pinyins := []string{
-		"sao",
-		"mie",
+	pinyins := [][]string{
+		{"s", "ao"},
+		{"m", "ie"},
 	}
-	want := []string{
-		"sc",
-		"mp",
+	want := [][]string{
+		{"s", "c"},
+		{"m", "p"},
 	}
 	n := NewTransform(FlyPY)
 	for i, pinyin := range pinyins {
-		shuangpin := n.Pinyin2Shuangpin(pinyin)
+		shuangpin := n.Shengyun2Shuangpin(pinyin)
 		assert.Equal(t, want[i], shuangpin)
 	}
 }

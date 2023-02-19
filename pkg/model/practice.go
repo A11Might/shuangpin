@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	width = 74.
+	width = 104.
 )
 
 var (
@@ -86,7 +87,7 @@ type Model struct {
 
 func NewModel(scheme, mode string, disablePyPrompt, disableKbPrompt bool) Model {
 	return Model{
-		word:            NewRandomWord(shuangpin.ShuangpinScheme(scheme), practiceMode(mode)),
+		word:            NewWord(shuangpin.ShuangpinScheme(scheme), practiceMode(mode)),
 		keyBoard:        NewKeyBoard(),
 		disablePyPrompt: disablePyPrompt,
 		disableKbPrompt: disableKbPrompt,
@@ -125,7 +126,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// 字符不满数量时不清空，返回 false
 		check := func() bool {
 			if len(m.typed) == len(m.word.Shuangpyin) {
-				if strings.ToLower(m.typed) == m.word.Shuangpyin {
+				if strings.ToLower(m.typed) == m.word.Answer {
 					m.word.Next()
 				}
 				m.typed = ""
@@ -148,7 +149,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyTab:
 			// Tab 显示答案
-			m.typed = m.word.Shuangpyin
+			m.typed = m.word.Answer
 
 		case tea.KeySpace, tea.KeyEnter:
 			// 空格/回车，切换或清空
@@ -205,29 +206,38 @@ func (m Model) View() string {
 		doc.WriteString(dialog + "\n\n")
 	}
 
-	// TODO 优化代码
 	// KeyBoard
 	{
 		k := m.keyBoard
-		lines := make([]string, 0, len(k.keyboard))
-		for i, rows := range k.keyboard {
+		lines := make([]string, 0, len(k.keyChar))
+		for i, rows := range k.keyChar {
 			line := make([]string, 0, len(rows))
-			for j, col := range rows {
+			for j, char := range rows {
 				// 展示汉字双拼提示
 				if !m.disableKbPrompt &&
-					(strings.Contains(col, strings.ToUpper(string(m.word.Shuangpyin[0]))) ||
-						strings.Contains(col, strings.ToUpper(string(m.word.Shuangpyin[1])))) {
+					(char == m.word.Shuangpyin[0] ||
+						char == m.word.Shuangpyin[1]) {
+					// 零声母汉字特殊处理
+					if m.word.Shengyun[0] == "" {
+						m.word.Shengyun[0] = string(m.word.Shengyun[1][0])
+					}
 					if i == k.hit.X && j == k.hit.Y {
-						line = append(line, keyStyle.Copy().Background(lipgloss.Color("64")).Render(col))
+						// 回显按键操作
+						line = append(line, keyStyle.Copy().Background(lipgloss.Color("64")).Render(k.keyDisplay[i][j]))
 					} else {
-						line = append(line, keyStyle.Copy().Background(lipgloss.Color("63")).Render(col))
+						// 双拼提示
+						if char == string(m.word.Shuangpyin[0]) {
+							line = append(line, keyStyle.Copy().Background(lipgloss.Color("63")).Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[0])))
+						} else {
+							line = append(line, keyStyle.Copy().Background(lipgloss.Color("63")).Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[1])))
+						}
 					}
 				} else if i == k.hit.X && j == k.hit.Y {
 					// 回显用户按键操作
-					line = append(line, keyPressStyle.Render(col))
+					line = append(line, keyPressStyle.Render(k.keyDisplay[i][j]))
 				} else {
 					// 正常展示键盘按键
-					line = append(line, keyStyle.Render(col))
+					line = append(line, keyStyle.Render(k.keyDisplay[i][j]))
 				}
 			}
 			lines = append(lines, lipgloss.JoinHorizontal(lipgloss.Center, line...))
@@ -238,8 +248,6 @@ func (m Model) View() string {
 	// help
 	{
 		helpView := m.help.View(m.keys)
-		// height := 8 - strings.Count(helpView, "\n")
-		// doc.WriteString(strings.Repeat("\n", height) + helpView)
 		doc.WriteString(helpView + "\n")
 	}
 
