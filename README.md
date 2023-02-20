@@ -11,7 +11,7 @@
   </a>
 </p>
 
-> 在你的命令行中练习双拼
+> Practice shuangpin in your terminal.
 
 ### ✨ Demo
 
@@ -19,19 +19,27 @@
 
 ## Install
 
+you can [install Go](https://golang.org/dl/) and build from source (requires Go 1.16+):
+
 ```sh
-go install github.com/A11Might/shuangpin
+go install github.com/A11Might/shuangpin@latest
 ```
 
 ## Usage
 
-默认使用自然码方案，并显示拼音及按键提示进行随机汉字练习。
+By default, the natural code scheme is used, and pinyin and key prompts are displayed for random Chinese character practice.
 
 ```sh
 shuangpin
 ```
 
-运行 `shuangpin --help`，获取所有可用选项。
+It is recommended for beginners to choose the shuangpin scheme they want to learn, and then use the `all sequence` mode to practice.
+
+```
+shuangpin -s zrm -m sequence
+```
+
+To get a full overview of all available options, run `shuangpin --help`.
 
 ```sh
 NAME:
@@ -50,12 +58,6 @@ GLOBAL OPTIONS:
    --pinyin, -p              disable pinyin prompt (default: false)
    --keyboard, -k            disable key prompt (default: false)
    --help, -h                show help
-```
-
-初学者推荐先选择想学习的双拼方案，然后使用 *全部顺序* 模式进行练习：
-
-```
-shuangpin -s zrm -m sequence
 ```
 
 ## Author
