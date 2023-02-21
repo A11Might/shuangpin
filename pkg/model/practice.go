@@ -44,7 +44,11 @@ var (
 
 	keyStyle = lipgloss.NewStyle().
 			BorderStyle(lipgloss.NormalBorder()).
-			BorderForeground(lipgloss.Color("63"))
+			BorderForeground(lipgloss.Color("#5f5fff"))
+	keyPromptStyle = keyStyle.Copy().
+			Background(lipgloss.Color("#5f5fff"))
+	keyRightStyle = keyStyle.Copy().
+			Background(lipgloss.Color("#5f8700"))
 	keyPressStyle = keyStyle.Copy().
 			Reverse(true)
 
@@ -74,6 +78,7 @@ type Model struct {
 	word     *Word
 	keyBoard *KeyBoard
 	typed    string // 用户输入内容
+	nextWord bool   // 下一个单词
 	quitting bool
 
 	// help
@@ -127,7 +132,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		check := func() bool {
 			if len(m.typed) == len(m.word.Shuangpyin) {
 				if strings.ToLower(m.typed) == m.word.Answer {
-					m.word.Next()
+					// 先标记，在消除按键回显效果时，再进行实际下一个汉字的获取
+					// 防止立即获取后，View 方法展示不正确：双拼第二个字符不展示正确输入效果
+					m.nextWord = true
 				}
 				m.typed = ""
 				return true
@@ -173,6 +180,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case TickMsg:
 		// 消除按键回显效果
 		m.keyBoard.hit = defaultPosition
+		if m.nextWord {
+			m.word.Next()
+			m.nextWord = false
+		}
 		return m, nil
 
 	default:
@@ -223,13 +234,29 @@ func (m Model) View() string {
 					}
 					if i == k.hit.X && j == k.hit.Y {
 						// 回显按键操作
-						line = append(line, keyStyle.Copy().Background(lipgloss.Color("64")).Render(k.keyDisplay[i][j]))
+						line = append(line, keyRightStyle.Render(k.keyDisplay[i][j]))
 					} else {
 						// 双拼提示
-						if char == string(m.word.Shuangpyin[0]) {
-							line = append(line, keyStyle.Copy().Background(lipgloss.Color("63")).Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[0])))
+						if m.word.Shuangpyin[0] == m.word.Shuangpyin[1] {
+							// 当双拼为两个相同的字符时（ruan - rr），根据用户输入展示双拼声韵母提示
+							if char == string(m.word.Shuangpyin[0]) && len(m.typed) == 0 {
+								// 用户未输入，提示双拼声母
+								line = append(line, keyPromptStyle.Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[0])))
+							} else {
+								// 用户输入第一个字母正确，才提示双拼韵母
+								if len(m.typed) != 0 && string(m.typed[0]) == m.word.Shuangpyin[0] {
+									line = append(line, keyPromptStyle.Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[1])))
+								} else {
+									line = append(line, keyPromptStyle.Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[0])))
+								}
+							}
 						} else {
-							line = append(line, keyStyle.Copy().Background(lipgloss.Color("63")).Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[1])))
+							// 当双拼为两个不相同字符时，直接显示双拼的生韵母提示
+							if char == string(m.word.Shuangpyin[0]) {
+								line = append(line, keyPromptStyle.Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[0])))
+							} else {
+								line = append(line, keyPromptStyle.Render(fmt.Sprintf("%s%5s", strings.ToUpper(char), m.word.Shengyun[1])))
+							}
 						}
 					}
 				} else if i == k.hit.X && j == k.hit.Y {
