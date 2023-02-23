@@ -55,8 +55,8 @@ func main() {
 				Usage:   "View the supported shuangpin schemes and practice mode",
 				Action: func(cCtx *cli.Context) error {
 					fmt.Println(
-						"支持的双拼方案：自然码（zrm）、小鹤双拼（flypy）、搜狗双拼（sougou）、微软双拼（ms)\n" +
-							"支持的练习模式：全部顺序（sequence）、全部随机（random）",
+						"support shuangpin scheme: ziranma(zrm), xiaohe(xh), sougou(sg), weiruan(wr)\n" +
+							"support practice mode: sequence, random",
 					)
 					return nil
 				},

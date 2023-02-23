@@ -3,10 +3,10 @@ package shuangpin
 type ShuangpinScheme string
 
 const (
-	NaturalCode ShuangpinScheme = "zrm"    // 自然码
-	FlyPY       ShuangpinScheme = "flypy"  // 小鹤双拼
-	SouGou      ShuangpinScheme = "sougou" // 搜狗双拼
-	MS          ShuangpinScheme = "ms"     // 微软双拼
+	NaturalCode ShuangpinScheme = "zrm" // 自然码
+	FlyPY       ShuangpinScheme = "xh"  // 小鹤双拼
+	SouGou      ShuangpinScheme = "sg"  // 搜狗双拼
+	MS          ShuangpinScheme = "wr"  // 微软双拼
 )
 
 var (
